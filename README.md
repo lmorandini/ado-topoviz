@@ -54,12 +54,31 @@ In addition, parameters can be passed in the command-line of the various Python 
 
 ## Corpus preparation
 
+The initial corpus has to be written as one or more JSON files, following this format:
+```json
+{"rows":[
+  {"key":[2022,2,22,"1001553536138792961","1311306326711001089"],
+   "value":{"tags":"","tokens":"tyra|banks|voice|have|ONE|humbler|hand"}},
+  {"key":[2022,2,22,"1001553536138792961","1311306326711001089"],
+    "value":{"tags":"here","tokens":"There"}},
+  {"key":[2022,2,22,"1002011177931620352","1195592725829079040"],
+    "value":{"tags":"here|there","tokens":"And|Or"}}
+ ]
+}
+```
+
+Where:
+  - `key` is composed of: year, month, day, conversationid, tweetid
+  - `value` is composed of: 
+     - `tags` a string with all the hashtags separated by '|' and without the hash sign
+     - `tokens` a string with all the tweet works separated by '|'
+
+Once the JSON files are ready, they can be processed in a loop with a script like the followingf:
 ```shell
   export LOG_LEVEL='WARNING'
   export NLTK_DIR=./nltk_data
-  export TOKENIZERS_PARALLELISM=true
 
-  for f in ~/data/twitter*json
+  for f in ~/git/ado-pipeline-nlp/rebase/data/*.json
   do
     python ./src/buildCorpus.py\
       --corpus_query_file="${f}"\
@@ -69,37 +88,41 @@ In addition, parameters can be passed in the command-line of the various Python 
       --corpus_file="$(basename ${f}).corpus"
   done
 ```
+(Explanation of the options can be read with `python ./src/buildCorpus.py --help`.)
+
 
 ## Topic Modelling
 
+Once the Pickle files with the corpus are ready, the topic modelling can be started with a scriot like the following:
 ```shell
   export LOG_LEVEL='WARNING'
   export TOKENIZERS_PARALLELISM=true
 
   python ./src/buildDynTopics.py\
-     --corpora_dir='../ado-pipeline-nlp/rebase/data'\
+     --corpora_dir='/tmp'\
      --output_dir='/tmp'\
-     --corpus_name="twitter-2022"\
+     --corpus_prefix="twitter-2022"\
      --model_name="0-3"\
      --bert_min_topic_size 1000\
      --x_scale 1000\
      --y_scale 1000\
      --sample_fraction=128
-  
 ```
+(Explanation of the options can be read with `python ./src/buildDynTopics.py --help`.)
 
 
 ### Computation of the Surfaces
 
+The finale surface can be computed with a script liek the following: 
 ```shell
   export LOG_LEVEL='WARNING'
 
   python ./src/computeSurface.py\
-      --input_dir='../ado-pipeline-nlp/rebase/viz'\
+      --input_dir='/tmp'\
       --output_dir='/tmp'\
-      --model_name="twitter-0-4"\
+      --model_name='twitter-2022-0-3'\
       --n_rows 600\
       --z_scale 200\
       --max_dist 0.9      
 ```
-
+(Explanation of the options can be read with `python ./src/computeSurface.py --help`.)
