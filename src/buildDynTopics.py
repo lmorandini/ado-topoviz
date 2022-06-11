@@ -101,7 +101,7 @@ def main():
              help='config file path')
     argp.add('--corpora_dir', required=False, type=str, env_var='CORPORA_DIR',
              help='directory holding output corpus')
-    argp.add('--corpus_name', required=True, type=str, env_var='CORPUS_NAME',
+    argp.add('--corpus_prefix', required=True, type=str, env_var='CORPUS_PREFIX',
              help='input corpus file name prefix')
     argp.add('--output_dir', required=True, type=str, env_var='OUTPUT_DIR',
              help='directory holding output data')
@@ -120,8 +120,13 @@ def main():
              help='fraction of the corpus to use')
 
     settings = argp.parse_known_args()[0]
-    corpora_files = glob.glob(f'{settings.corpora_dir}/{settings.corpus_name}*.corpus.pickle')
+    print(f'{settings.corpora_dir}/{settings.corpus_prefix}*.corpus.pickle')
+    corpora_files = glob.glob(f'{settings.corpora_dir}/{settings.corpus_prefix}*.corpus.pickle')
     corpora_files.sort()
+
+    if len(corpora_files) == 0:
+       logger.warning(f'No corpus file to read')
+       return
 
     corpus = []
     timestamps = []
@@ -142,7 +147,7 @@ def main():
                        settings.sample_fraction)
 
     # Export locations to GeoJSON
-    f = f'{settings.output_dir}/{settings.corpus_name}-{settings.model_name}'
+    f = f'{settings.output_dir}/{settings.corpus_prefix}-{settings.model_name}'
     exportTopicLocationToGeoJSON(locs, f'{f}.topiclocation.geojson',
                                  settings.x_scale, settings.y_scale)
     logger.warning(f'Written {f}.topiclocation.geojson')
