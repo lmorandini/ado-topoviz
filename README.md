@@ -65,6 +65,8 @@ The initial corpus has to be written as one or more JSON files, following this f
     "value":{"tags":"here|there","tokens":"And|Or"}}
  ]
 }
+
+The JSON files should be stored in the directory called `data` at the top level of the repo.
 ```
 
 Where:
@@ -73,12 +75,12 @@ Where:
      - `tags` a string with all the hashtags separated by '|' and without the hash sign
      - `tokens` a string with all the tweet works separated by '|'
 
-Once the JSON files are ready, they can be processed in a loop with a script like the followingf:
+Once the JSON files are ready, they can be processed in a loop with a script like the following:
 ```shell
   export LOG_LEVEL='WARNING'
   export NLTK_DIR=./nltk_data
 
-  for f in ~/git/ado-pipeline-nlp/rebase/data/*.json
+  for f in ./data/*.json
   do
     python ./src/buildCorpus.py\
       --corpus_query_file="${f}"\
@@ -93,7 +95,7 @@ Once the JSON files are ready, they can be processed in a loop with a script lik
 
 ## Topic Modelling
 
-Once the Pickle files with the corpus are ready, the topic modelling can be started with a scriot like the following:
+Once the Pickle files with the corpus are ready, the topic modelling can be started with a script like the following:
 ```shell
   export LOG_LEVEL='WARNING'
   export TOKENIZERS_PARALLELISM=true
@@ -113,7 +115,7 @@ Once the Pickle files with the corpus are ready, the topic modelling can be star
 
 ### Computation of the Surfaces
 
-The finale surface can be computed with a script liek the following: 
+The finale surface can be computed with a script like the following: 
 ```shell
   export LOG_LEVEL='WARNING'
 
