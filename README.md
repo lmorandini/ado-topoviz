@@ -113,7 +113,15 @@ Once the Pickle files with the corpus are ready, the topic modelling can be star
 (Explanation of the options can be read with `python ./src/buildDynTopics.py --help`.)
 
 
-### Computation of the Surfaces
+### Computation of the Spython ./src/buildDynTopics.py\
+     --corpora_dir='/tmp'\
+     --output_dir='/tmp'\
+     --corpus_prefix="twitter-2022"\
+     --model_name="0-3"\
+     --bert_min_topic_size 1000\
+     --x_scale 1000\
+     --y_scale 1000\
+     --sample_fraction=128urfaces
 
 The finale surface can be computed with a script like the following: 
 ```shell
@@ -128,3 +136,16 @@ The finale surface can be computed with a script like the following:
       --max_dist 0.9      
 ```
 (Explanation of the options can be read with `python ./src/computeSurface.py --help`.)
+
+```shell
+  export LOG_LEVEL='WARNING'
+  export NLTK_DIR=./nltk_data
+  for i in {1..100}
+  do
+    python ./src/dimReduction.py\
+      --model_dir='/tmp'\
+      --model_name='topic_model.bert'\
+      --output_dir='/tmp'\
+      --output_file="topic_model.bert.topics.${i}"
+  done
+```

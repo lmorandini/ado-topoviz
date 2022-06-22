@@ -120,7 +120,6 @@ def main():
              help='fraction of the corpus to use')
 
     settings = argp.parse_known_args()[0]
-    print(f'{settings.corpora_dir}/{settings.corpus_prefix}*.corpus.pickle')
     corpora_files = glob.glob(f'{settings.corpora_dir}/{settings.corpus_prefix}*.corpus.pickle')
     corpora_files.sort()
 
